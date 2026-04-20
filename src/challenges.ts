@@ -5,7 +5,13 @@
 // Input: ISO date string
 // Output: string in YYYY-MM-DD format or null if invalid
 export function formatShortDate(dateString: string): string | null {
-  throw new Error('Not implemented')
+  const date = new Date(dateString)
+  
+  if (Number.isNaN(date.getTime())){
+    return null
+  }
+  return date.toISOString().slice(0,10)
+ 
 }
 
 // 2. isBefore
@@ -13,7 +19,14 @@ export function formatShortDate(dateString: string): string | null {
 // Output: true if first date is earlier than second, otherwise false
 // Return false if either date is invalid
 export function isBefore(a: string, b: string): boolean {
-  throw new Error('Not implemented')
+  const dateA = new Date(a)
+  const dateB = new Date(b)
+
+  if (Number.isNaN(dateA.getTime()) || Number.isNaN(dateB.getTime())){
+    return false
+  }
+  return dateA.getTime() < dateB.getTime()
+  
 }
 
 // 3. daysBetween
@@ -21,7 +34,18 @@ export function isBefore(a: string, b: string): boolean {
 // Output: number of full days between dates or null if invalid
 // Return the number of FULL days between dates (round down)
 export function daysBetween(a: string, b: string): number | null {
-  throw new Error('Not implemented')
+
+  const dateA = new Date(a)
+  const dateB = new Date(b)
+
+  if(Number.isNaN(dateA.getTime()) || Number.isNaN(dateB.getTime())){
+    return null
+  }
+  const diffMs = dateB.getTime() - dateA.getTime()
+  const msPerDay = 24*60*60*1000
+  
+  return Math.floor(diffMs / msPerDay)
+ 
 }
 
 // 4. sortPostsByCreatedAt
@@ -35,7 +59,11 @@ type Post = {
 }
 
 export function sortPostsByCreatedAt(posts: Post[]): Post[] {
-  throw new Error('Not implemented')
+  const copiedPosts = [...posts]
+
+  return copiedPosts.sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  })
 }
 
 // 5. relativeDayLabel
@@ -43,12 +71,27 @@ export function sortPostsByCreatedAt(posts: Post[]): Post[] {
 // Output: 'today', 'yesterday', or '<n> days ago'
 // Return null if invalid
 export function relativeDayLabel(target: string, today: string): string | null {
-  throw new Error('Not implemented')
+  const diff = daysBetween(target, today)
+
+  if (diff === null) {
+    return null
+  }
+
+  if (diff === 0) {
+    return 'today'
+  }
+
+  if (diff === 1) {
+    return 'yesterday'
+  }
+
+  return `${diff} days ago`
 }
 
 // 6. isValidDateString
 // Input: string
 // Output: true if valid date, false otherwise
 export function isValidDateString(dateString: string): boolean {
-  throw new Error('Not implemented')
+  const date = new Date(dateString)
+  return !Number.isNaN(date.getTime())
 }
